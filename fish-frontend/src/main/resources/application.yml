@@ -1,0 +1,35 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /frontend
+spring:
+  application:
+    name: fish-frontend
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fishinit?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+  main:
+    allow-circular-references: true
+# mybatisPlus配置
+mybatis-plus:
+  # mapper映射地址
+  mapper-locations: classpath:mapper/*.xml
+  # 实体类扫描包路径
+  type-aliases-package: com.fish.fishframework.domain.entity
+  configuration:
+    # sql打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto

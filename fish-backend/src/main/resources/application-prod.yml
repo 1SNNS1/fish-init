@@ -1,0 +1,14 @@
+# 线上配置文件
+server:
+  port: 9999
+spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fishinit?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+mybatis-plus:
+  configuration:
+    # 生产环境关闭日志
+    log-impl: ''
