@@ -6,9 +6,7 @@ import com.fish.fishframework.domain.entity.User;
 import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author fishLight
-* @description 针对表【user(用户)】的数据库操作Service
-* @createDate 2023-09-02 21:24:35
+* User服务接口
 */
 public interface UserService extends IService<User> {
 

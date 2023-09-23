@@ -21,9 +21,7 @@ import static com.fish.fishframework.constant.UserConstant.ADMIN_ROLE;
 import static com.fish.fishframework.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
- * @author fishLight
- * @description 针对表【user(用户)】的数据库操作Service实现
- * @createDate 2023-09-02 21:24:35
+ * User服务实现类
  */
 @Service
 @Slf4j
