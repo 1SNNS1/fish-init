@@ -1,50 +1,52 @@
 package com.fish.fishframework.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fish.fishframework.common.ErrorCode;
 import com.fish.fishframework.domain.entity.User;
 import com.fish.fishframework.exception.BusinessException;
-import com.fish.fishframework.service.UserService;
 import com.fish.fishframework.mapper.UserMapper;
+import com.fish.fishframework.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.Cache;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.concurrent.Callable;
+import java.util.Objects;
 
 import static com.fish.fishframework.constant.UserConstant.ADMIN_ROLE;
 import static com.fish.fishframework.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
-* @author fishLight
-* @description 针对表【user(用户)】的数据库操作Service实现
-* @createDate 2023-09-02 21:24:35
-*/
+ * @author fishLight
+ * @description 针对表【user(用户)】的数据库操作Service实现
+ * @createDate 2023-09-02 21:24:35
+ */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+        implements UserService {
 
     @Resource
     private UserMapper userMapper;
 
-    private Cache cache;
+    @Resource
+    CacheManager cacheManager;
 
     /**
      * 盐值，混淆密码
      */
     private static final String SALT = "fishapi";
 
+    /**
+     * @param userAccount   用户账户
+     * @param userPassword  用户密码
+     * @param checkPassword 校验密码
+     * @return long
+     */
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -83,6 +85,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
     }
 
+    /**
+     *
+     * @param userAccount  用户账户
+     * @param userPassword 用户密码
+     * @param request
+     * @return User
+     */
     @Override
     public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
@@ -110,7 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 3. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         // 4. 将用户信息存储在缓存
-        cache.put(user.getId(),user);
+        Objects.requireNonNull(cacheManager.getCache("cache")).put(user.getId(), user);
         return user;
     }
 
@@ -118,21 +127,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 获取当前登录用户
      *
      * @param request
-     * @return
+     * @return User
      */
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        System.out.println("当前用户"+userObj.toString());
-        User currentUser = (User) userObj;
-        if (currentUser == null || currentUser.getId() == null) {
+        if (userObj == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
-        // 为了方便快捷这里使用springboot自带的cache
+        User currentUser = (User) userObj;
+        if (currentUser.getId() == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        log.info("当前用户" + currentUser.getUserAccount());
+        // 为了方便快捷这里使用spring自带的cache
         long userId = currentUser.getId();
         // 从缓存中获取用户信息
-        currentUser = cache.get(userId,User.class);
+        currentUser = Objects.requireNonNull(cacheManager.getCache("cache")).get(userId, User.class);
         if (currentUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
@@ -143,7 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 是否为管理员
      *
      * @param request
-     * @return
+     * @return boolean
      */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
@@ -157,6 +169,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 用户注销
      *
      * @param request
+     * @return boolean
      */
     @Override
     public boolean userLogout(HttpServletRequest request) {
@@ -166,7 +179,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "未登录");
         }
         // 移除缓存中的用户数据
-        cache.evict(user.getId());
+        Objects.requireNonNull(cacheManager.getCache("cache")).evict(user.getId());
         // 移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;

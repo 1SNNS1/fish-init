@@ -9,7 +9,7 @@ spring:
   profiles:
     active: dev
   mvc:
-    pathmatch:
+    path-match:
       matching-strategy: ANT_PATH_MATCHER
   # 数据源配置
   datasource:
@@ -29,7 +29,7 @@ mybatis-plus:
     # sql打印
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 开启驼峰命名
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: false
   global-config:
     db-config:
       logic-delete-field: delFlag

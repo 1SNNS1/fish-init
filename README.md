@@ -39,3 +39,8 @@ fish-init:pom进行统一版本控制
 - mybatis plus 3.5.2
 - knife4j 3.0.3
 
+## 其它说明
+
+- 这里用到了spring自带的cache缓存，存储用户信息，想要用其它缓存可以在CacheConfig配置文件自行配置
+- 接口文档链接：`http://localhost:9999/backend/doc.html#/home` and `http://localhost:8888/frontend/doc.html#/home`
+

@@ -37,7 +37,7 @@ public class UserController {
      * 用户注册
      *
      * @param userRegisterRequest
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
@@ -59,7 +59,7 @@ public class UserController {
      *
      * @param userLoginRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -78,7 +78,7 @@ public class UserController {
      * 用户注销
      *
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
@@ -93,7 +93,7 @@ public class UserController {
      * 获取当前登录用户
      *
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
@@ -112,7 +112,7 @@ public class UserController {
      *
      * @param userAddRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/add")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
@@ -133,7 +133,7 @@ public class UserController {
      *
      * @param deleteRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -149,7 +149,7 @@ public class UserController {
      *
      * @param userUpdateRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
@@ -167,7 +167,7 @@ public class UserController {
      *
      * @param id
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @GetMapping("/get")
     public BaseResponse<UserVO> getUserById(int id, HttpServletRequest request) {
@@ -185,7 +185,7 @@ public class UserController {
      *
      * @param userQueryRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @GetMapping("/list")
     public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest, HttpServletRequest request) {
@@ -208,7 +208,7 @@ public class UserController {
      *
      * @param userQueryRequest
      * @param request
-     * @return
+     * @return BaseResponse
      */
     @GetMapping("/list/page")
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {

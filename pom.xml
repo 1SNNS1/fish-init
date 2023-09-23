@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fish</groupId>
     <artifactId>fish-init</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.1</version>
     <name>fish-init</name>
     <description>fish-init 项目</description>
 
